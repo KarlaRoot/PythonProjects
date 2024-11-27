@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <title>YT</title>
+</head>
+<body>
+    <div class="all">
+        <div class="ovladani">
+            <div class="formCont">
+                <h1>YouTube Download</h1>
+                <form action="/result" method="POST">
+                    <input type="text" name="text" placeholder="Zadejte url videa..">
+                    <input type="submit" value="Stáhnout">
+                </form>
+            </div>
+        </div>   
+    </div>   
+</body>
+</html>
