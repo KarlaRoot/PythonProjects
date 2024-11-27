@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, session, make_response
 from video import Video
-
+"""Legal and Ethical Notice
+The program YT download/YTDownload is for legal use only. Use of this program must comply with the laws of your country and YouTube's Terms of Service (Terms of Service). The author is not responsible for any illegal or unethical use of this program. Please only download content for which you have explicit permission or content that is in the public domain."""
 app = Flask(__name__)
 app.secret_key = "heslo"
 
