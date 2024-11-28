@@ -12,52 +12,61 @@ class Video:
     def _get_video_info(self):
         try:
             options = {
-                "format": "best",  # selects the best available format
-                "noplaylist": True,  # without playlists
+                "format": "best",  # choose the best available format
+                "noplaylist": True,  # disable playlists
             }
             with YoutubeDL(options) as ydl:
-                # extracts video information (not download)
+                # load video information
                 self.video_info = ydl.extract_info(self.url, download=False)
-                
-                # video download stream
-                self.stream = ydl.extract_info(self.url, download=True)["formats"][0]
-                
         except Exception as e:
             print("Error retrieving video information:", e)
             self.video_info = None
 
     def stahnout(self):
         try:
-            # is there information about the video?
             if not self.video_info:
-                raise ValueError("Video není dostupné")
+                raise ValueError("Video is not available.")
             
-            # get video title
-            title = self.video_info.get("title", "video").replace("/", "-").replace("\\", "-")  # replaces characters
-            safe_title = "".join(c for c in title if c.isalnum() or c in " _-")  # allowed characters for file name
+            title = self.video_info.get("title", "video").replace("/", "-").replace("\\", "-")
+            safe_title = "".join(c for c in title if c.isalnum() or c in " _-")
             
-            # YoutubeDL for downloading a file named
-            with YoutubeDL({"outtmpl": f"static/videa/{safe_title}.mp4"}) as ydl:
-                ydl.download([self.url])  # download video
+            output_path = "static/videa"
+            output_file = f"{output_path}/{safe_title}.mp4"
+            
+            options = {
+                "outtmpl": output_file,
+                "noplaylist": True,  # disable playlists
+            }
+            with YoutubeDL(options) as ydl:
+                ydl.download([self.url])  # downloanding video
+            
+            self.downloaded_path = output_file
             return True
         except Exception as e:
             print("Error downloading video:", e)
             return False
 
+
     def getInfo(self):
         if self.video_info:
+            filesize = self.video_info.get("filesize")
+            size_str = (
+                f"{round(filesize / (1024 * 1024), 2)} MB" if filesize else "Unknown size"
+            )
             return [
                 self.video_info.get("uploader", "Unknown author"),
                 self.video_info.get("duration", 0),
                 self.video_info.get("view_count", 0),
-                f"{round(self.video_info.get('filesize', 0) / (1024 * 1024), 2)} MB",
-                self.video_info.get("title", "Unknown title")
+                size_str,  # file size
+                self.video_info.get("title", "Unknown title"),
             ]
         return []
 
+
     def odkaz(self):
-        if self.video_info:
-            return f"static/videa/{self.video_info.get('id')}.mp4"
+        # is there a path to the downloaded video
+        if hasattr(self, "downloaded_path"):
+            return self.downloaded_path
         return ""
 
     def getObrazek(self):
